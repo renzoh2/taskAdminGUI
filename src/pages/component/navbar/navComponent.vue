@@ -1,0 +1,10 @@
+<template>
+  <nav>
+    <ul>
+      <li>
+        <a>Accounts</a>
+        <a>Logout</a>
+      </li>
+    </ul>
+  </nav>
+</template>

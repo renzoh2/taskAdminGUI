@@ -17,9 +17,8 @@ const error = reactive({
 const login = async () => {
   await axios.get("sanctum/csrf-cookie");
   const { data } = await axios.post("api/login", loginForm);
-
-  if (data) {
-    await Promise.all([store.dispatch("setAuthentication", true), store.dispatch("getTokenAuth")]);
+  if (data.status == "Success") {
+    await Promise.all([store.dispatch("setAuthentication", true), store.dispatch("getTokenAuth", data.data.token)]);
     router.push({ name: "admin.tasks" });
   } else {
     error.status = true;
@@ -47,7 +46,7 @@ const login = async () => {
           </div>
           <div class="flex justify-between gap-2.5 my-2 mx-1">
             <label>PASSWORD</label>
-            <input type="text" class="border-2 border-black w-4/6" v-model="loginForm.password" />
+            <input type="password" class="border-2 border-black w-4/6" v-model="loginForm.password" />
           </div>
           <div class="flex gap-2.5 my-2 mx-1">
             <input type="checkbox" v-model="loginForm.remember" />

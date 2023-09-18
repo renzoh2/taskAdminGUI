@@ -16,9 +16,12 @@ const actions = {
   setAuthentication({ commit }, payload) {
     commit("setAuth", payload);
   },
-  async getTokenAuth({ commit }) {
-    const token = await axios.get("api/user");
-    commit("setToken", token);
+  async getTokenAuth({ commit }, token) {
+    const status = await axios.get("api/user");
+    if (status) commit("setToken", token);
+  },
+  getLogout({ commit }) {
+    commit("setLogout");
   },
 };
 const mutations = {
@@ -30,6 +33,7 @@ const mutations = {
   },
   setLogout(state) {
     state.isAuthenticated = false;
+    state.token = null;
   },
 };
 export default {

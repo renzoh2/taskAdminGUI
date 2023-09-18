@@ -6,7 +6,7 @@ const routes = [
   { path: "/", name: "index", component: () => import("@/pages/loginPage.vue") },
   { path: "/register", name: "register", component: () => import("@/pages/registerPage.vue") },
   { path: "/admin/tasks", name: "admin.tasks", component: () => import("@/pages/admin/tasksPage.vue"), meta: { requiresAuth: true } },
-  { path: "/admin/tasks/trash", name: "admin.tasks.trash", component: () => import("@/pages/admin/dashboardPage.vue"), meta: { requiresAuth: true } },
+  { path: "/admin/tasks/trash", name: "admin.tasks.trash", component: () => import("@/pages/admin/tasksPage.vue"), meta: { requiresAuth: true } },
 ];
 
 //Router
@@ -24,7 +24,11 @@ router.beforeEach((to, from, next) => {
       router.push({ path: "/" });
     }
   } else {
-    next();
+    if (store.getters.isAuth) {
+      router.push({ path: "/admin/tasks" });
+    } else {
+      next();
+    }
   }
 });
 

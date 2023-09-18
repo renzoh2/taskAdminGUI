@@ -47,22 +47,25 @@ const login = async () => {
           <span class="block sm:inline"> {{ alert.message }}</span>
         </div>
       </div>
-      <div class="mx-auto w-2/12 mt-3 border-2 border-black text-center">
+      <div class="mx-auto w-3/12 mt-3 border-2 border-gray-400 p-10 text-center rounded-lg">
+        <div class="w-full text-center mb-5">
+          <h1><b class="text-4xl">TASK</b> <span class="text-lg">ADMIN</span></h1>
+        </div>
         <form class="flex flex-col" @submit.prevent="login">
           <div class="flex justify-between gap-2.5 my-2 mx-1">
-            <label>EMAIL</label>
-            <input type="text" class="border-2 border-black w-4/6" v-model="loginForm.email" required />
+            <label class="py-2"><b>Email Address</b></label>
+            <input type="text" class="bg-gray-300 focus:bg-white rounded hover:outline-blue-500 w-4/6 p-2" v-model="loginForm.email" required />
           </div>
           <div class="flex justify-between gap-2.5 my-2 mx-1">
-            <label>PASSWORD</label>
-            <input type="password" class="border-2 border-black w-4/6" v-model="loginForm.password" required />
+            <label class="py-2"><b>Password</b></label>
+            <input type="password" class="bg-gray-300 focus:bg-white rounded hover:outline-blue-500 w-4/6 p-2" v-model="loginForm.password" required />
           </div>
           <div class="flex gap-2.5 my-2 mx-1">
             <input type="checkbox" v-model="loginForm.remember" />
             <label>Remember Me?</label>
           </div>
-          <div>
-            <button type="submit" class="bg-cyan-400 hover:bg-cyan-800 hover:text-white w-full py-2"><b>LOGIN ACCOUNT</b></button>
+          <div class="mt-5">
+            <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-white w-full py-2 rounded"><b>LOGIN ACCOUNT</b></button>
           </div>
         </form>
       </div>

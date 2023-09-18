@@ -46,12 +46,10 @@ const search = reactive({
   text: "",
 });
 
-watch(search, async (newSearch, oldSearch) => {
+watch(search, async (newSearch) => {
   let params = "";
   if (newSearch != "") params = { filter: { key: "task_title", value: newSearch["text"] } };
   await store.dispatch("fetchDataWithPayload", { params });
-  // try {
-  // } catch (error) {}
 });
 
 const handleAdd = () => {

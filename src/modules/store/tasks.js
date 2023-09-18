@@ -29,10 +29,14 @@ const actions = {
     const { data } = await axios.get("api/tasks");
     commit("setTableData", data);
   },
+  async fetchDataWithPayload({ commit }, payload) {
+    const { data } = await axios.get("api/tasks", payload);
+    commit("setTableData", data);
+  },
 
   async editItem({ commit, state }, payload) {
     const { id: currentId } = payload;
-
+    console.log(payload);
     const { data } = await axios.put("api/tasks/" + currentId, payload);
 
     if (data.status === "Success") {

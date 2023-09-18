@@ -10,8 +10,11 @@ const loginForm = reactive({
   remember: false,
 });
 
-const error = reactive({
-  status: false,
+const alert = reactive({
+  trigger: false,
+  status: "",
+  title: "",
+  message: "",
 });
 
 const login = async () => {
@@ -19,34 +22,40 @@ const login = async () => {
   const { data } = await axios.post("api/login", loginForm);
   if (data.status == "Success") {
     await Promise.all([store.dispatch("setAuthentication", true), store.dispatch("getTokenAuth", data.data.token)]);
-    router.push({ name: "admin.tasks" });
-  } else {
-    error.status = true;
-    //set Alert Timeout
     setTimeout(function () {
-      error.status = false;
+      router.push({ name: "admin.tasks" });
     }, 6000);
   }
+  console.log(data);
+  alert.trigger = true;
+  alert.status = data.status;
+  alert.title = data.title;
+  alert.message = data.message;
+  //set Alert Timeout
+  setTimeout(function () {
+    alert.trigger = false;
+  }, 6000);
 };
 </script>
 <template>
   <div class="flex flex-col min-h-screen">
     <div class="my-auto">
-      <div class="mx-auto w-3/12" v-if="error.status">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong class="font-bold">Login Failed!</strong>
-          <span class="block sm:inline"> Please enter correct Email Address.</span>
+      <div class="mx-auto w-3/12" v-if="alert.trigger">
+        <div class="border px-4 py-3 rounded relative flex gap-x-2" :class="alert.status == 'Success' ? 'border-green-400 text-green-600' : 'border-red-400 text-red-600'" role="alert">
+          <span v-if="alert.status == 'Success'"><img class="w-5/12" src="../../assets/loader.gif" /></span>
+          <strong class="font-bold">{{ alert.title }}</strong>
+          <span class="block sm:inline"> {{ alert.message }}</span>
         </div>
       </div>
       <div class="mx-auto w-2/12 mt-3 border-2 border-black text-center">
         <form class="flex flex-col" @submit.prevent="login">
           <div class="flex justify-between gap-2.5 my-2 mx-1">
             <label>EMAIL</label>
-            <input type="text" class="border-2 border-black w-4/6" v-model="loginForm.email" />
+            <input type="text" class="border-2 border-black w-4/6" v-model="loginForm.email" required />
           </div>
           <div class="flex justify-between gap-2.5 my-2 mx-1">
             <label>PASSWORD</label>
-            <input type="password" class="border-2 border-black w-4/6" v-model="loginForm.password" />
+            <input type="password" class="border-2 border-black w-4/6" v-model="loginForm.password" required />
           </div>
           <div class="flex gap-2.5 my-2 mx-1">
             <input type="checkbox" v-model="loginForm.remember" />

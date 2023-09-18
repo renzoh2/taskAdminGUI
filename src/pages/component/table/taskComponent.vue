@@ -1,6 +1,5 @@
 <script setup>
-import axios from "../../../modules/axios";
-import { reactive, onMounted, computed } from "vue";
+import { reactive, onMounted, computed, watch } from "vue";
 import { eventbus } from "../../../utils";
 import store from "../../../modules/store";
 
@@ -30,11 +29,29 @@ eventbus.$on("taskFormAlert: onshowAlert", (data) => {
   }, 6000);
 });
 
+const statusOptions = {
+  todo: "To Do",
+  inprogress: "In Progress",
+  completed: "Completed",
+};
+
 const action = reactive({
   modalAdd: false,
   modalEdit: false,
   modalOpen: false,
   data: null,
+});
+
+const search = reactive({
+  text: "",
+});
+
+watch(search, async (newSearch, oldSearch) => {
+  let params = "";
+  if (newSearch != "") params = { filter: { key: "task_title", value: newSearch["text"] } };
+  await store.dispatch("fetchDataWithPayload", { params });
+  // try {
+  // } catch (error) {}
 });
 
 const handleAdd = () => {
@@ -65,7 +82,7 @@ const handleDelete = async (id) => {
         <span class="absolute top-0 bottom-0 right-0 px-4 py-3"> </span>
       </div>
     </div>
-    <div class="w-full">
+    <div class="w-full flex flex-row justify-between">
       <button class="bg-gray-800 hover:bg-green-500 flex rounded-md p-1 text-white flex gap-x-1 px-2 py-2 my-2" @click="handleAdd">
         <b>Add Task</b>
         <svg class="my-auto" enable-background="new 0 0 50 50" height="18" id="Layer_1" version="1.1" viewBox="0 0 50 50" width="18" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -74,12 +91,19 @@ const handleDelete = async (id) => {
           <line fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="4" x1="25" x2="25" y1="9" y2="41" />
         </svg>
       </button>
+      <form>
+        <div class="flex flex-row gap-x-2 my-3">
+          <label><b>Quick Search: </b> </label>
+          <input type="text" class="border-2 border-gray-400 rounded" v-model="search.text" />
+        </div>
+      </form>
     </div>
     <table class="border-gray-900 rounded-xl">
       <th class="border-2 border-slate-900 bg-slate-900 text-white">
         <tr class="flex p-2">
           <td class="w-8/12 text-left"><b>Title</b></td>
           <td class="w-full text-left"><b>Description</b></td>
+          <td class="w-4/12 text-left"><b>Status</b></td>
           <td class="w-8/12 text-left"><b>User</b></td>
           <td class="w-5/12 text-left"><b>Action</b></td>
         </tr>
@@ -88,6 +112,7 @@ const handleDelete = async (id) => {
         <tr v-for="row in tableData" v-bind:key="`task-item-${row.id}`" class="flex flex-row px-2 py-5 shadow shadow-slate-900">
           <td class="w-8/12">{{ row.title }}</td>
           <td class="w-full">{{ row.description }}</td>
+          <td class="w-4/12">{{ statusOptions[row.status] }}</td>
           <td class="w-8/12">{{ row.user }}</td>
           <td class="w-5/12">
             <div class="flex justify-center gap-x-2 text-white">

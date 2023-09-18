@@ -11,7 +11,7 @@ const modalAction = reactive({
 const initTaskForm = () => ({
   title: "",
   description: "",
-  status: "",
+  status: "todo",
 });
 
 const edit = reactive({ id: null });
@@ -25,6 +25,7 @@ const statusOptions = {
 const taskForm = reactive({ ...initTaskForm() });
 
 eventbus.$on("taskFormModal: onChangeModal", (item) => {
+  Object.assign(taskForm, initTaskForm());
   modal.isOpen = item.modalOpen;
   modalAction.add = item.modalAdd;
   modalAction.edit = item.modalEdit;
